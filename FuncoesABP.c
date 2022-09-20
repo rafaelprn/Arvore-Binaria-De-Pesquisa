@@ -24,21 +24,32 @@ TNoABP* insereNoRec(TNoABP **raiz, int k); //D
 void imprimeABP(TNoABP *raiz); //A
 TNoABP* menorNo(TNoABP *raiz); //C
 void liberaABP(TNoABP **raiz); //E
+void contaFolha(TNoABP *raiz, int *x); //B
+void calculaMedia(TNoABP *raiz, double *k, double *x); //G
+void removeNo(TNoABP **raiz, int k); //F
 
 
 int main(){
     TNoABP *raiz = NULL;
-    // insereNoRec(&raiz, 10);
-    // insereNoRec(&raiz, 5);
-    // insereNoRec(&raiz, 3);
-    // insereNoRec(&raiz, 7);
-    // insereNoRec(&raiz, 2);
-    // insereNoRec(&raiz, 6);
-    // insereNoRec(&raiz, 8);
+    insereNoRec(&raiz, 10);
+    insereNoRec(&raiz, 5);
+    insereNoRec(&raiz, 3);
+    insereNoRec(&raiz, 7);
+    insereNoRec(&raiz, 2);
+    insereNoRec(&raiz, 6);
+    insereNoRec(&raiz, 8);
+    insereNoRec(&raiz, 1);
     //imprimeABP(raiz);
     //TNoABP *novosla = menorNo(raiz);
-    //liberaABP(raiz);
-    imprimeABP(raiz);
+    // liberaABP(&raiz);
+    //int *n = NULL;
+    int z = 0;
+    contaFolha(raiz, &z);
+    printf("\n%d", z);
+    // imprimeABP(raiz);
+    double k = 0, x = 0;
+    calculaMedia(raiz, &k, &x);
+    printf("\n%.2f", k/x);
     
 
 
@@ -57,13 +68,15 @@ TNoABP* insereNoRec(TNoABP **raiz, int k){
     if(*(raiz) == NULL){ //caso base = arvore vazia
         TNoABP *novo = alocaNo(k);
         *(raiz) = novo;
-        return &raiz;
+        return *raiz;
     }
     if(k > (*raiz)->chave){ //no passado é menor que o no atual
         insereNoRec(&(*raiz)->dir, k); //vai para a esquerda
     }
-    else
+    else{
         insereNoRec(&(*raiz)->esq, k);
+    }
+    return *raiz;
 }
 
 void imprimeABP(TNoABP *raiz){
@@ -71,8 +84,8 @@ void imprimeABP(TNoABP *raiz){
         printf("nada");
         return;
     }
-    printf("\n%d", raiz->chave);
     imprimeABP(raiz->esq);
+    printf("\n%d", raiz->chave); //imprime abp em ordem, esq - raiz - dir
     imprimeABP(raiz->dir);
 }
 
@@ -80,7 +93,7 @@ TNoABP* menorNo(TNoABP *raiz){
     TNoABP *aux = raiz;
     TNoABP *pant;
     if (raiz == NULL){
-        return;
+        return NULL;
     }
     while(aux->esq != NULL){
         pant = aux;
@@ -91,38 +104,58 @@ TNoABP* menorNo(TNoABP *raiz){
 }
 
 void liberaABP(TNoABP **raiz){
-    TNoABP *paux = *raiz;
-    if(paux != NULL){
-        liberaABP(paux->esq);
-        liberaABP(paux->dir);
-        free(paux);
+    if(*raiz != NULL){
+        liberaABP(&(*raiz)->esq);
+        liberaABP(&(*raiz)->dir);
+        free(*raiz);
+        *raiz = NULL;
     }
-    *raiz = NULL;
 }
 
-// TNoABP *buscaABPRec(TNoABP *raiz, int k){
-//     if(raiz == NULL){//caso base
-//         return NULL;
+void contaFolha(TNoABP *raiz, int *x){
+    if(raiz == NULL){
+        return;
+    }
+    contaFolha(raiz->esq, x);
+    contaFolha(raiz->dir, x);
+    if((raiz->dir == NULL) != (raiz->esq == NULL)){
+        *x += 1;
+    }
+}
+
+// void removeNo(TNoABP **raiz, int k)
+// {
+//     TNoABP *filho = NULL;
+//     if (raiz == NULL){
+//         return;
 //     }
-//     if(k == raiz->chave){ //se achou a chave
-//         return raiz;
+//     if (*raiz == NULL){
+//         return;
 //     }
-//     if(k < raiz->chave){ //se esta na esquerda
-//         return buscaABPRec(raiz->esq, k);
+//     if (((*raiz)->dir == NULL) != ((*pp)->esq == NULL)){ //remover com 1 filho
+//         filho = ((*raiz)->esq == NULL) ? (*pp)->dir : (*pp)->esq;
+//         free(*raiz);
+//         *raiz = filho;
+//         return;
 //     }
-//     else{ //se nao ta na esquerda ta na direita
-//         return buscaABPRec(raiz->dir, k);
+//     if(raiz->esq != NULL && raiz->dir != NULL){
+//         TNoABP *aux = raiz->esq;
+//         while(aux->dir != NULL){
+//             aux = aux + aux->dir;
+//         }
+//         raiz->chave = aux->chave;
+//         aux->chave =chave;
+        
 //     }
+
 // }
 
-// int buscaABPRec2(TNoABP *raiz){
-//     if(raiz == NULL){//caso base
-//         return NULL;
-//     }
-//     if(raiz->esq == NULL && raiz->dir == NULL){ //se achou o folha
-//         return 1;
-//     }
-//     else{ 
-//         return 0;
-//     }
-// }
+void calculaMedia(TNoABP *raiz, double *k, double *x){
+    if(raiz == NULL){
+        return;
+    }
+    calculaMedia(raiz->esq, k, x);
+    *k += raiz->chave;
+    *x += 1;
+    calculaMedia(raiz->dir, k, x);
+}
