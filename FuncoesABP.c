@@ -1,77 +1,93 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-typedef struct ABP{
+typedef struct ABP
+{
     int chave;
     struct ABP *esq, *dir;
-}TNoABP;
+} TNoABP;
 
-/* 
-1. Apresente um procedimento (ou função) para cada enunciado abaixo. Decida você mesmo a struct dos nós, 
+/*
+1. Apresente um procedimento (ou função) para cada enunciado abaixo. Decida você mesmo a struct dos nós,
 os protótipos das funções procurando usar de bom senso. Se necessário, apresente outras suposições ao seu código.
 a) imprime todos os nós de uma ABP - feita
 b) conta o total de nós folhas de uma ABP
 c) devolve o ponteiro do ponteiro do nó de menor valor chave de uma ABP - feito
 d) insere um valor chave em uma dada ABP. - feita
-e) procedimento que remove todos os nós de uma árvore binária de pesquisa dada. 
+e) procedimento que remove todos os nós de uma árvore binária de pesquisa dada.
     Não permita vazamentos ou qualquer outro tipo de erro de ponteiros.
 f) dado o ponteiro de ponteiro para um nó de uma ABP, remova tal nó. Assuma que o nó não é folha.
 g) calcular a média dos valores chaves de uma ABP dada.
 */
 
 TNoABP *alocaNo(int k);
-TNoABP* insereNoRec(TNoABP **raiz, int k); //D
-void imprimeABP(TNoABP *raiz); //A
-TNoABP* menorNo(TNoABP *raiz); //C
-void liberaABP(TNoABP **raiz); //E
-void contaFolha(TNoABP *raiz, int *x); //B
-void calculaMedia(TNoABP *raiz, double *k, double *x); //G
-TNoABP* removeNo(TNoABP *raiz, int chave); //F
+TNoABP *insereNoRec(TNoABP **raiz, int k);             // D
+void imprimeABP(TNoABP *raiz);                         // A
+TNoABP *menorNo(TNoABP *raiz);                         // C
+TNoABP *liberaABP(TNoABP **raiz);                      // E
+void contaFolha(TNoABP *raiz, int *x);                 // B
+void calculaMedia(TNoABP *raiz, double *k, double *x); // G
+
+TNoABP *removeNo(TNoABP *raiz, int chave); // F
 
 void removeNo2Filhos(TNoABP **raiz, int k);
 
-
-int main(){
+int main()
+{
     TNoABP *raiz = NULL;
-    // insereNoRec(&raiz, 10);
-    // insereNoRec(&raiz, 5);
-    // insereNoRec(&raiz, 3);
-    // insereNoRec(&raiz, 7);
-    // insereNoRec(&raiz, 2);
-    // insereNoRec(&raiz, 6);
-    // insereNoRec(&raiz, 8);
-    // insereNoRec(&raiz, 1);
-    insereNoRec(&raiz, 100);
-    insereNoRec(&raiz, 50);
-    insereNoRec(&raiz, 25);
-    insereNoRec(&raiz, 75);
-    insereNoRec(&raiz, 60);
-    insereNoRec(&raiz, 80);
-    insereNoRec(&raiz, 90);
-    insereNoRec(&raiz, 55);
-    insereNoRec(&raiz, 65);
-    insereNoRec(&raiz, 150);
-    imprimeABP(raiz);
-    raiz = removeNo(raiz, 75);
-    //imprimeABP(raiz);
-    //TNoABP *novosla = menorNo(raiz);
-    // liberaABP(&raiz);
-    //int *n = NULL;
-    // int z = 0;
-    // contaFolha(raiz, &z);
-    // printf("\n%d", z);
-    printf("\nimpressao");
-    imprimeABP(raiz);
-    // double k = 0, x = 0;
-    // calculaMedia(raiz, &k, &x);
-    // printf("\n%.2f", k/x);
-    
+    // int op = 0;
+    // while (op != 8)
+    // {
+    //     printf("\nMENU:\n1 - Inserir no\n2 - Remover no\n3 - Imprimir ABP");
+    //     printf("\n4 - Achar o menor no\n5 - Contar nos folha\n6 - Calcular media dos nos");
+    //     printf("\n7 - Limpar ABP\n8 - Sair\n");
+    //     scanf("%d", &op);
+    //     switch (op)
+    //     {
+    //     case 1:
+    //         printf("\noi\n");
+    //         break;
 
+    //     default:
+    //         break;
+    //     }
+    // }
+
+    insereNoRec(&raiz, 10);
+    insereNoRec(&raiz, 7);
+    insereNoRec(&raiz, 5);
+    insereNoRec(&raiz, 20);
+    insereNoRec(&raiz, 15);
+    insereNoRec(&raiz, 30);
+    insereNoRec(&raiz, 12);
+    insereNoRec(&raiz, 17);
+    insereNoRec(&raiz, 25);
+    insereNoRec(&raiz, 35);
+    printf("\nPrimeira insercao: ");
+    imprimeABP(raiz);
+    TNoABP *novosla = menorNo(raiz);
+    int *n = NULL;
+    int z = 0;
+    contaFolha(raiz, &z);
+    printf("\nA arvore tem %d no(s) folha", z);
+    double k = 0, x = 0;
+    calculaMedia(raiz, &k, &x);
+    printf("\nA media de todos os nos da arvore eh: %.2f", k / x);
+
+    raiz = removeNo(raiz, 10);
+    printf("\nNo retornado: %d", raiz->chave);
+    printf("\nSegunda impressao: ");
+    imprimeABP(raiz);
+
+    printf("\nRemovendo todos os nos... ");
+    raiz = liberaABP(&raiz);
+    imprimeABP(raiz);
 
     return 0;
 }
 
-TNoABP *alocaNo(int k){
+TNoABP *alocaNo(int k)
+{
     TNoABP *novo = (TNoABP *)malloc(sizeof(TNoABP));
     novo->esq = NULL;
     novo->dir = NULL;
@@ -79,175 +95,159 @@ TNoABP *alocaNo(int k){
     return novo;
 }
 
-TNoABP* insereNoRec(TNoABP **raiz, int k){
-    if(*(raiz) == NULL){ //caso base = arvore vazia
+TNoABP *insereNoRec(TNoABP **raiz, int k)
+{
+    if (*(raiz) == NULL)
+    { // caso base = arvore vazia
         TNoABP *novo = alocaNo(k);
         *(raiz) = novo;
         return *raiz;
     }
-    if(k > (*raiz)->chave){ //no passado é menor que o no atual
-        insereNoRec(&(*raiz)->dir, k); //vai para a esquerda
+    if (k > (*raiz)->chave)
+    {                                  // no passado é menor que o no atual
+        insereNoRec(&(*raiz)->dir, k); // vai para a esquerda
     }
-    else{
+    else
+    {
         insereNoRec(&(*raiz)->esq, k);
     }
     return *raiz;
 }
 
-void imprimeABP(TNoABP *raiz){
-    if(raiz == NULL){
-        //printf("nada");
+void imprimeABP(TNoABP *raiz)
+{
+    if (raiz == NULL)
+    {
+        printf("\nA arvore esta vazia!");
         return;
     }
-    imprimeABP(raiz->esq);
-    printf("\n%d", raiz->chave); //imprime abp em ordem, esq - raiz - dir
-    imprimeABP(raiz->dir);
+    if (raiz->esq != NULL)
+    {
+        imprimeABP(raiz->esq);
+    }
+    printf("\n%d", raiz->chave); // imprime abp em ordem, esq - raiz - dir
+    if (raiz->dir != NULL)
+    {
+        imprimeABP(raiz->dir);
+    }
 }
 
-TNoABP* menorNo(TNoABP *raiz){
+TNoABP *menorNo(TNoABP *raiz)
+{
     TNoABP *aux = raiz;
-    TNoABP *pant;
-    if (raiz == NULL){
+    if (raiz == NULL)
+    {
         return NULL;
     }
-    while(aux->esq != NULL){
-        pant = aux;
-        aux = aux->esq; 
-    }//chegou no menor no
-    printf("\n%d", pant->chave);
-    return &(*pant);
+    while (aux->esq != NULL)
+    {
+        aux = aux->esq;
+    } // chegou no menor no
+    printf("\nO menor no eh: %d", aux->chave);
+    return aux;
 }
 
-void liberaABP(TNoABP **raiz){
-    if(*raiz != NULL){
+TNoABP *liberaABP(TNoABP **raiz)
+{
+    if (*raiz != NULL)
+    {
         liberaABP(&(*raiz)->esq);
         liberaABP(&(*raiz)->dir);
         free(*raiz);
-        *raiz = NULL;
+        // *raiz = NULL;
     }
+    return NULL;
 }
 
-void contaFolha(TNoABP *raiz, int *x){
-    if(raiz == NULL){
+void contaFolha(TNoABP *raiz, int *x)
+{
+    if (raiz == NULL)
+    {
         return;
     }
     contaFolha(raiz->esq, x);
     contaFolha(raiz->dir, x);
-    if((raiz->dir == NULL) != (raiz->esq == NULL)){
+    if ((raiz->dir == NULL) && (raiz->esq == NULL))
+    {
         *x += 1;
     }
 }
 
-// void removeNo(TNoABP **raiz, int k)
-// {
-//     TNoABP *filho = NULL;
-//     if(raiz == NULL){
-//         return;
-//     }
-//     if(*raiz == NULL){
-//         return;
-//     }
-//     if (((*raiz)->dir == NULL) != ((*raiz)->esq == NULL)){ //remover com 1 filho
-//         filho = ((*raiz)->esq == NULL) ? (*raiz)->dir : (*raiz)->esq;
-//         free(*raiz);
-//         *raiz = filho;
-//         return;
-//     }
-//     if((*raiz)->esq != NULL && (*raiz)->dir != NULL){
-//         TNoABP *aux = (*raiz)->esq;
-//         while(aux->dir != NULL){
-//             aux = aux + aux->dir;
-//         }
-//         (*raiz)->chave = aux->chave;
-//         aux->chave = chave;
-//     }
-// }
+void calculaMedia(TNoABP *raiz, double *k, double *x)
+{
+    if (raiz == NULL)
+    {
+        return;
+    }
+    calculaMedia(raiz->esq, k, x);
+    *k += raiz->chave;
+    *x += 1;
+    calculaMedia(raiz->dir, k, x);
+}
 
-// TNoABP* removeNo(TNoABP *raiz, int k){
-//     TNoABP *pant = NULL;
-//     pant = raiz;
-//     if(raiz == NULL){ //se a arvore estiver vazia
-//         printf("\nO valor nao encontrado!");
-//         return NULL;
-//     }
-//     else{
-//         //procura o no para remover
-//         if(raiz->chave == k){
-//             //remocao de no folha
-//             if(raiz->esq == NULL && raiz->dir == NULL){ //no folha
-//                 free(raiz);
-//                 return NULL;
-//             }
-//             else{
-//                 //remocao de nos com 2 filhos
-//                 if(raiz->esq != NULL && raiz->dir != NULL){ //se tem 2 filhos
-//                     TNoABP *aux = raiz->esq; //vou pegar o maior dos menores
-//                     while(aux->dir != NULL){ //enquanto tiver alguem maior
-//                         aux = aux->dir; //percorre ate encontrar o maior
-//                      //o maior da subarvore, vai estar o maximo a direita possivel,
-//                     }//aqui pegou o maior no da subarvore e botou em aux
-//                     raiz->chave = aux->chave; //a chave do meu no q vai ser removido passa a ser
-//                     aux->chave = k;
-//                     raiz->esq = removeNo(raiz->esq, k);
-//                     return raiz;
-//                 }
-//                 else{
-//                     //remocao de no com 1 filho
-//                     TNoABP *aux;
-//                     if(raiz->esq != NULL){
-//                         aux = raiz->esq;
-//                     }
-//                     else{
-//                         aux = raiz->dir;
-//                     }
-//                     free(raiz);
-//                     return aux;
-//                 }
-//             }
-//         }
-//         else{
-//             if(k < raiz->chave){
-//                 raiz->esq = removeNo(raiz->esq, k);
-//             }
-//             else{
-//                 raiz->dir = removeNo(raiz->dir, k);
-//             }
-//             return raiz;
-//         }
-//     }
-// }
+TNoABP *buscaNo(TNoABP **raiz, int k)
+{
+    if ((*raiz) == NULL)
+    {
+        return NULL;
+    }
+    if ((*raiz)->chave == k)
+    {
+        return raiz; // achou
+    }
+    if ((*raiz)->chave > k)
+    {
+        return buscaNo(&(*raiz)->esq, k);
+    }
+    else
+    {
+        return buscaNo(&(*raiz)->dir, k);
+    }
+}
 
-/*
-        função para remover nós da Árvore binária
-*/
-TNoABP* removeNo(TNoABP *raiz, int chave) {
-    if(raiz == NULL){
+TNoABP *auxMenor(TNoABP **raiz) // achar o menor dos maiores
+{
+    if (*raiz == NULL)
+        return NULL;
+
+    if ((*raiz)->esq == NULL)
+        return raiz;
+    return auxMenor(&(*raiz)->esq);
+}
+
+TNoABP *removeNo(TNoABP *raiz, int chave) // nesta funcao, trocamos o valor do no substituto no no a ser removido e removemos o substituto
+{
+    if (raiz == NULL)
+    {
         printf("Valor nao encontrado!\n");
         return NULL;
-    } else { // procura o nó a remover
-        if(raiz->chave == chave) {
-            // remove nós folhas (nós sem filhos)
-            if(raiz->esq == NULL && raiz->dir == NULL) {
+    }
+    else
+    {                             // procura o nó a remover
+        if (raiz->chave == chave) // se encontrou o no que vai ser removido
+        {
+            if (raiz->esq == NULL && raiz->dir == NULL) // se esse no eh folha
+            {
+                printf("\nNo folha removido: %d\n", raiz->chave);
                 free(raiz);
-                printf("\nNo folha removido: %d\n", chave);
                 return NULL;
             }
-            else{
-                // remover nós que possuem 2 filhos
-                if(raiz->esq != NULL && raiz->dir != NULL){
+            else // se nao for no folha
+            {
+                if (raiz->esq != NULL && raiz->dir != NULL) // se o no tiver dois filhos
+                {
                     TNoABP *aux = raiz->esq;
-                    while(aux->dir != NULL)
+                    while (aux->dir != NULL)
                         aux = aux->dir;
                     raiz->chave = aux->chave;
-                    aux->chave = chave;
-                    printf("\nElemento trocado: %d\n", chave);
-                    raiz->esq = removeNo(raiz->esq, chave);
+                    printf("\nElemento trocado: %d", chave);
+                    raiz->esq = removeNo(raiz->esq, aux->chave);
                     return raiz;
                 }
-                else{
-                    // remover nós que possuem apenas 1 filho
+                else // se o no tiver apenas um filho
+                {
                     TNoABP *aux;
-                    if(raiz->esq != NULL)
+                    if (raiz->esq != NULL)
                         aux = raiz->esq;
                     else
                         aux = raiz->dir;
@@ -256,39 +256,18 @@ TNoABP* removeNo(TNoABP *raiz, int chave) {
                     return aux;
                 }
             }
-        } else {
-            if(chave < raiz->chave)
+        }
+        else
+        {
+            if (chave < raiz->chave) // procura o no na esquerda caso seja menor
+            {
                 raiz->esq = removeNo(raiz->esq, chave);
-            else
+            }
+            else // caso contrario vai pra direita
+            {
                 raiz->dir = removeNo(raiz->dir, chave);
+            }
             return raiz;
         }
     }
-}
-
-// void removeNo2Filhos(TNoABP **raiz, int k){
-//     //MAIOR DOS MENORES
-//     if((*raiz) == NULL){
-//         printf("A arvore esta vazia!");
-//         return;
-//     }
-//     TNoABP *paux = (*raiz)->esq; //substituto
-//     TNoABP *pant = paux; //pai do substituto
-//     while(paux->dir != NULL){
-//         pant = paux;
-//         paux = paux->dir; //achar o maior no da subarvore esquerda
-//     } //achou
-//     (*raiz)->chave = paux->chave;
-//     pant->dir = NULL;
-//     free(paux);
-// }
-
-void calculaMedia(TNoABP *raiz, double *k, double *x){
-    if(raiz == NULL){
-        return;
-    }
-    calculaMedia(raiz->esq, k, x);
-    *k += raiz->chave;
-    *x += 1;
-    calculaMedia(raiz->dir, k, x);
 }
